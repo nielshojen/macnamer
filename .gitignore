@@ -1,3 +1,4 @@
+.DS_Store
 *.log
 *.pot
 *.pyc
@@ -5,4 +6,5 @@ local_settings.py
 *.db
 macnamer.db
 macnamer/settings.py
-scripts/MacNamer.pkg
+scripts/macnamer*.pkg
+scripts/Python.framework

@@ -1,6 +1,6 @@
 USE_PKGBUILD=1
 include /usr/local/share/luggage/luggage.make
-PB_EXTRA_ARGS+= --sign "[name of your installer dev cert]}"
+PB_EXTRA_ARGS+= --sign "[name of your installer dev cert]"
 TITLE=macnamer
 REVERSE_DOMAIN=com.grahamgilbert
 PACKAGE_VERSION=1.1

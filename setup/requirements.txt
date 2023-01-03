@@ -4,3 +4,4 @@ django-bootstrap-toolkit==2.15.0
 docutils==0.17.1
 #puppetdb==0.0.1
 requests==2.26.0
+uwsgi

@@ -29,7 +29,7 @@ class ComputerGroup(models.Model):
 
 class Network(models.Model):
     network = models.CharField(max_length=200, unique=True)
-    computergroup = models.ForeignKey(ComputerGroup)
+    computergroup = models.ForeignKey(ComputerGroup, on_delete=models.CASCADE)
     def __unicode__(self):
         return self.network
     class Meta:

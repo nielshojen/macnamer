@@ -12,6 +12,7 @@ def GenerateKey():
         return GenerateKey()
     except ComputerGroup.DoesNotExist:
         return key;
+
 class ComputerGroup(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)

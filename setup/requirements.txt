@@ -1,6 +1,7 @@
 Django==3.2.6
 #South==1.0.2
-django-bootstrap-toolkit==2.15.0
+#django-bootstrap-toolkit==2.15.0
+django-bootstrap5
 docutils==0.17.1
 #puppetdb==0.0.1
 requests==2.26.0

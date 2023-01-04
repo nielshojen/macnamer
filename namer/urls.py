@@ -1,6 +1,9 @@
 from django.conf.urls.defaults import *
+#from django.urls import path
 
-urlpatterns = patterns('namer.views',
+from . import views
+
+urlpatterns = [
     #front. page
     url(r'^$', 'index', name='home'),
     #new group
@@ -25,4 +28,4 @@ urlpatterns = patterns('namer.views',
     url(r'^group/show/(?P<group_id>.+)/', 'show_group', name='show_group'),
     #get json info
     url(r'^checkin/', 'checkin', name='checkin'),
-)
+]

@@ -12,7 +12,7 @@ from .models import *
 from .forms import *
 from django.db.models import Q, Max
 from datetime import datetime
-from django.utils import simplejson
+import json as simplejson
 import re
 
 def get_client_ip(request):

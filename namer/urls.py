@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 #from django.urls import path
 
-from views import *
+from namer.views import *
 
 urlpatterns = [
     #front. page

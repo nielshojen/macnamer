@@ -1,53 +1,57 @@
 # -*- coding: utf-8 -*-
 import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from django.db import models, migrations
 
+class Migration(migrations.Migration):
 
-class Migration(SchemaMigration):
+    dependencies = [
+    ]
 
-    def forwards(self, orm):
-        # Adding model 'ComputerGroup'
-        db.create_table('namer_computergroup', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('prefix', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('domain', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-        ))
-        db.send_create_signal('namer', ['ComputerGroup'])
-
-        # Adding model 'Computer'
-        db.create_table('namer_computer', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('computergroup', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['namer.ComputerGroup'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
-        ))
-        db.send_create_signal('namer', ['Computer'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'ComputerGroup'
-        db.delete_table('namer_computergroup')
-
-        # Deleting model 'Computer'
-        db.delete_table('namer_computer')
-
-
-    models = {
-        'namer.computer': {
-            'Meta': {'object_name': 'Computer'},
-            'computergroup': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['namer.ComputerGroup']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
-        },
-        'namer.computergroup': {
-            'Meta': {'object_name': 'ComputerGroup'},
-            'domain': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'prefix': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
-        }
-    }
-
-    complete_apps = ['namer']
+    operations = [
+        migrations.CreateModel(
+            name='namer_computergroup',
+            fields=[
+                ('id', models.AutoField(verbose_name='id',
+                                        serialize=False,
+                                        auto_created=True,
+                                        primary_key=True)),
+                ('name', models.CharField(max_length=200)),
+                ('prefix', models.CharField(max_length=200, null=True, blank=True)),
+                ('domain', models.CharField(max_length=200, null=True, blank=True)),
+                ('key', models.CharField(max_length=255, unique=True, null=True, blank=True)),
+            ],
+            options={
+                'ordering': ['name'],
+            },
+        ),
+        migrations.CreateModel(
+            name='namer_computer',
+            fields=[
+                ('id', models.AutoField(verbose_name='id',
+                                        serialize=False,
+                                        auto_created=True,
+                                        primary_key=True)),
+                ('computergroup', models.CharField(max_length=200)),
+                ('name', models.ForeignKey(to='namer.MachineGroup', on_delete=models.CASCADE), models.CharField(max_length=200, null=True, blank=True)),
+                ('serial', models.CharField(default='abc', max_length=200, unique=True)),
+                ('last_checkin', models.CharField(default=datetime.datetime(2012, 10, 10, 0, 0), null=True)),
+            ],
+            options={
+                'ordering': ['name'],
+            },
+        ),
+        migrations.CreateModel(
+            name='namer_network',
+            fields=[
+                ('id', models.AutoField(verbose_name='id',
+                                        serialize=False,
+                                        auto_created=True,
+                                        primary_key=True)),
+                ('network', models.CharField(max_length=200, unique=True)),
+                ('computergroup', models.ForeignKey(to='namer.ComputerGroup', on_delete=models.CASCADE)),
+            ],
+            options={
+                'ordering': ['network'],
+            },
+        ),
+    ]

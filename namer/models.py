@@ -13,6 +13,7 @@ def GenerateKey():
     except ComputerGroup.DoesNotExist:
         return key;
 class ComputerGroup(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
     prefix = models.CharField(max_length=200, verbose_name="Computer Name Prefix",blank=True,null=True)
     domain = models.CharField(max_length=200, verbose_name="Computer Domain",blank=True,null=True)
@@ -28,6 +29,7 @@ class ComputerGroup(models.Model):
             return self.id
 
 class Network(models.Model):
+    id = models.AutoField(primary_key=True)
     network = models.CharField(max_length=200, unique=True)
     computergroup = models.ForeignKey(ComputerGroup, on_delete=models.CASCADE)
     def __unicode__(self):
@@ -36,6 +38,7 @@ class Network(models.Model):
         ordering = ['network']
 
 class Computer(models.Model):
+    id = models.AutoField(primary_key=True)
     computergroup = models.ForeignKey(ComputerGroup, on_delete=models.CASCADE)
     name = models.CharField(max_length=200, verbose_name="Computer Name")
     serial = models.CharField(max_length=200, verbose_name="Serial Number", unique=True)

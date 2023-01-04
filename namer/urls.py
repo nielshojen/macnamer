@@ -1,4 +1,5 @@
-from django.conf.urls.defaults import *
+#from django.conf.urls.defaults import *
+from django.conf.urls import url
 #from django.urls import path
 
 from namer.views import *

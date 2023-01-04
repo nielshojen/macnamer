@@ -7,9 +7,9 @@ admin.autodiscover()
 
 urlpatterns = [
     # url(r'^macnamer/', include('macnamer.foo.urls')),
-    url(r'^login/$', auth_views.LoginView.as_view(), name='login'),
-    url(r'^logout/$', auth_views.logout_then_login, name='logout_then_login'),
-    url(r'^changepassword/$', auth_views.PasswordChangeView.as_view(), name='password_change'),
+    url(r'^login/$', auth_views.LoginView.as_view()),
+    url(r'^logout/$', auth_views.logout_then_login),
+    url(r'^changepassword/$', auth_views.PasswordChangeView.as_view()),
     url(r'^changepassword/done/$', auth_views.PasswordChangeDoneView.as_view(),
          name='password_change_done'),
    	url(r'^', include('namer.urls')),

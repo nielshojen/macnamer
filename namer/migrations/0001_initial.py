@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('ComputerGroup', '__first__'),
+        ('namer', '__first__'),
     ]
 
     operations = [

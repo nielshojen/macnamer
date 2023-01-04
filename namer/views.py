@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.template import RequestContext, Template, Context
 from django.template.loader import get_template
-from django.core.context_processors import csrf
+#from django.template.context_processors import csrf
 from models import *
 from forms import *
 from django.db.models import Q, Max
@@ -43,16 +43,17 @@ def next_name(group):
 def index(request):
     #show table with computer groups
     groups = ComputerGroup.objects.all()
-    c = {'user': request.user, 'groups':groups, }
-    return render(request, 'namer/index.html', c, context_instance=RequestContext(request))
+    context = {'user': request.user, 'groups':groups, }
+    return render(request, 'namer/index.html', context)
 
 
 #new computer group
 @login_required
+@csrf_protect
 @permission_required('namer.add_computergroup', login_url='/login/')
 def new_computer_group(request):
-    c = {}
-    c.update(csrf(request))
+    context = {}
+    #context.update(csrf(request))
     if request.method == 'POST':
         form = ComputerGroupForm(request.POST)
         if form.is_valid():
@@ -61,16 +62,17 @@ def new_computer_group(request):
             return redirect('namer.views.show_group', new_computer_group.id)
     else:
         form = ComputerGroupForm()
-    c = {'form': form,}
-    return render(request, 'forms/new_computer_group.html', c, context_instance=RequestContext(request))
+    context = {'form': form,}
+    return render(request, 'forms/new_computer_group.html', context)
 
 #edit computer group
 @login_required
+@csrf_protect
 @permission_required('namer.change_computergroup', login_url='/login/')
 def edit_computer_group(request, group_id):
     group = get_object_or_404(ComputerGroup, pk=group_id)
-    c = {}
-    c.update(csrf(request))
+    context = {}
+    #context.update(csrf(request))
     if request.method == 'POST':
         form = ComputerGroupForm(request.POST, instance=group)
         if form.is_valid():
@@ -78,16 +80,17 @@ def edit_computer_group(request, group_id):
             return redirect('namer.views.show_group', the_group.id)
     else:
         form = ComputerGroupForm(instance=group)
-    c = {'form': form, 'group':group, }
-    return render(request, 'forms/edit_computer_group.html', c, context_instance=RequestContext(request))
+    context = {'form': form, 'group':group, }
+    return render(request, 'forms/edit_computer_group.html', context)
 
 #new computer
 @login_required
+@csrf_protect
 @permission_required('namer.add_computer', login_url='/login/')
 def new_computer(request, group_id):
     group = get_object_or_404(ComputerGroup, pk=group_id)
-    c = {}
-    c.update(csrf(request))
+    context = {}
+    #context.update(csrf(request))
     if request.method == 'POST':
         form = ComputerForm(request.POST)
         if form.is_valid():
@@ -100,17 +103,18 @@ def new_computer(request, group_id):
     else:
         initial_name = next_name(group)
         form = ComputerForm(initial={'name': initial_name})
-    c = {'form': form, 'group':group, }
-    return render(request, 'forms/new_computer.html', c, context_instance=RequestContext(request))
+    context = {'form': form, 'group':group, }
+    return render(request, 'forms/new_computer.html', context)
 
 #edit computer
 @login_required
+@csrf_protect
 @permission_required('namer.change_computer', login_url='/login/')
 def edit_computer(request, computer_id):
     computer = get_object_or_404(Computer, pk=computer_id)
 
-    c = {}
-    c.update(csrf(request))
+    context = {}
+    #context.update(csrf(request))
     if request.method == 'POST':
         form = ComputerForm(request.POST, instance=computer)
         if form.is_valid():
@@ -120,8 +124,8 @@ def edit_computer(request, computer_id):
             return redirect('namer.views.show_group', computer.computergroup.id)
     else:
         form = ComputerForm(instance=computer)
-    c = {'form': form, 'group':computer.computergroup, 'computer':computer, }
-    return render(request, 'forms/edit_computer.html', c, context_instance=RequestContext(request))
+    context = {'form': form, 'group':computer.computergroup, 'computer':computer, }
+    return render(request, 'forms/edit_computer.html', context)
 #show computer group
 @login_required
 def show_group(request, group_id):
@@ -133,8 +137,8 @@ def show_group(request, group_id):
         this_length = len(computer.name)
         if this_length > length:
             length = this_length
-    c = { 'user': request.user, 'group':group, 'computers':computers, 'length':length, }
-    return render(request, 'namer/show_group.html', c, context_instance=RequestContext(request))
+    context = { 'user': request.user, 'group':group, 'computers':computers, 'length':length, }
+    return render(request, 'namer/show_group.html', context)
 
 @login_required
 @permission_required('namer.delete_computer', login_url='/login/')
@@ -146,11 +150,12 @@ def delete_computer(request, computer_id):
 
 #new network
 @login_required
+@csrf_protect
 @permission_required('namer.add_network', login_url='/login/')
 def new_network(request, group_id):
     group = get_object_or_404(ComputerGroup, pk=group_id)
-    c = {}
-    c.update(csrf(request))
+    context = {}
+    #context.update(csrf(request))
     if request.method == 'POST':
         form = NetworkForm(request.POST)
         if form.is_valid():
@@ -160,17 +165,18 @@ def new_network(request, group_id):
             return redirect('namer.views.show_network', group.id)
     else:
         form = NetworkForm()
-    c = {'form': form, 'group':group, }
-    return render(request, 'forms/new_network.html', c, context_instance=RequestContext(request))
+    context = {'form': form, 'group':group, }
+    return render(request, 'forms/new_network.html', context)
 
 #edit network
 @login_required
+@csrf_protect
 @permission_required('namer.change_network', login_url='/login/')
 def edit_network(request, network_id):
     network = get_object_or_404(Network, pk=network_id)
 
-    c = {}
-    c.update(csrf(request))
+    context = {}
+    #context.update(csrf(request))
     if request.method == 'POST':
         form = NetworkForm(request.POST, instance=network)
         if form.is_valid():
@@ -179,16 +185,16 @@ def edit_network(request, network_id):
             return redirect('namer.views.show_network', network.computergroup.id)
     else:
         form = NetworkForm(instance=network)
-    c = {'form': form, 'group':network.computergroup, 'network':network, }
-    return render(request, 'forms/edit_network.html', c, context_instance=RequestContext(request))
+    context = {'form': form, 'group':network.computergroup, 'network':network, }
+    return render(request, 'forms/edit_network.html', context)
 
 #show network
 @login_required
 def show_network(request, group_id):
     group = get_object_or_404(ComputerGroup, pk=group_id)
     networks = group.network_set.all()
-    c = { 'user': request.user, 'group':group, 'networks':networks, }
-    return render(request,'namer/show_network.html', c, context_instance=RequestContext(request))
+    context = { 'user': request.user, 'group':group, 'networks':networks, }
+    return render(request, 'namer/show_network.html', context)
 
 @login_required
 @permission_required('namer.delete_network', login_url='/login/')

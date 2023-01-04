@@ -8,8 +8,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.template import RequestContext, Template, Context
 from django.template.loader import get_template
 #from django.template.context_processors import csrf
-from models import *
-from forms import *
+from .models import *
+from .forms import *
 from django.db.models import Q, Max
 from datetime import datetime
 from django.utils import simplejson

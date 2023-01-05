@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('computergroup', models.CharField(max_length=200)),
                 ('name', models.CharField(max_length=200)),
                 ('serial', models.CharField(default='abc', max_length=200, unique=True)),
-                ('last_checkin', models.CharField(default=datetime.datetime(2012, 10, 10, 0, 0), null=True)),
+                ('last_checkin', models.CharField(default=datetime.datetime(2012, 10, 10, 0, 0), max_length=200, null=True)),
             ],
             options={
                 'ordering': ['name'],

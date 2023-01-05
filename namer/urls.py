@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     #path('index', views.index, name='index'),
     #new group
-    url(r'^group/new/', views.new_computer_group),
+    url(r'^group/new/', views.new_computer_group, name='new_computer_group'),
     #edit group
     url(r'^group/edit/(?P<group_id>.+)/', views.edit_computer_group),
     #new computer

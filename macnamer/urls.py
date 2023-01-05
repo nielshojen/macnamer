@@ -12,7 +12,7 @@ urlpatterns = [
     url(r'^changepassword/$', auth_views.PasswordChangeView.as_view()),
     url(r'^changepassword/done/$', auth_views.PasswordChangeDoneView.as_view(),
          name='password_change_done'),
-   	url(r'^', include('namer.urls'), name='home'),
+   	url(r'^', include('namer.urls')),
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

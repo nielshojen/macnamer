@@ -1,12 +1,13 @@
 #from django.conf.urls.defaults import *
 from django.conf.urls import url
-#from django.urls import path
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
     #front. page
-    url(r'^$', views.index),
+    #url(r'^$', views.index),
+    path('', views.index),
     #new group
     url(r'^group/new/', views.new_computer_group),
     #edit group

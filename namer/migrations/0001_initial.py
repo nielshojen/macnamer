@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='namer_computergroup',
+            name='computergroup',
             fields=[
                 ('id', models.AutoField(verbose_name='id',
                                         serialize=False,
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='namer_computer',
+            name='computer',
             fields=[
                 ('id', models.AutoField(verbose_name='id',
                                         serialize=False,
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='namer_network',
+            name='network',
             fields=[
                 ('id', models.AutoField(verbose_name='id',
                                         serialize=False,

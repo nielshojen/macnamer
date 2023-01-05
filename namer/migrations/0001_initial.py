@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                                         serialize=False,
                                         auto_created=True,
                                         primary_key=True)),
-                ('computergroup', models.CharField(max_length=200)),
+                ('computergroup_id', models.CharField(max_length=200)),
                 ('name', models.ForeignKey(to='computergroup', on_delete=models.CASCADE, max_length=200, null=True, blank=True)),
                 ('serial', models.CharField(default='abc', max_length=200, unique=True)),
                 ('last_checkin', models.CharField(default=datetime.datetime(2012, 10, 10, 0, 0), max_length=200, null=True)),

@@ -6,8 +6,8 @@ from . import views
 
 urlpatterns = [
     #front. page
-    #url(r'^$', views.index),
-    path('', views.index),
+    url(r'^$', views.index),
+    path('index', views.index),
     #new group
     url(r'^group/new/', views.new_computer_group),
     #edit group

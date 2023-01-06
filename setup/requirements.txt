@@ -1,4 +1,4 @@
-Django==3.2.16
+Django==4.0.8
 django-bootstrap-v5
 docutils==0.17.1
 requests==2.26.0

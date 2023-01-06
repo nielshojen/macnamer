@@ -61,7 +61,7 @@ def new_computer_group(request):
         if form.is_valid():
             new_computer_group = form.save(commit=False)
             new_computer_group.save()
-            return redirect('namer.views.show_group', new_computer_group.id)
+            return redirect('show_group', new_computer_group.id)
     else:
         form = ComputerGroupForm()
     context = {'form': form,}
@@ -79,7 +79,7 @@ def edit_computer_group(request, group_id):
         form = ComputerGroupForm(request.POST, instance=group)
         if form.is_valid():
             the_group = form.save()
-            return redirect('namer.views.show_group', the_group.id)
+            return redirect('show_group', the_group.id)
     else:
         form = ComputerGroupForm(instance=group)
     context = {'form': form, 'group':group, }
@@ -123,7 +123,7 @@ def edit_computer(request, computer_id):
             the_computer = form.save(commit=False)
             the_computer.name = re.sub("^0+","",the_computer.name)
             the_computer.save()
-            return redirect('namer.views.show_group', computer.computergroup.id)
+            return redirect('show_group', computer.computergroup.id)
     else:
         form = ComputerForm(instance=computer)
     context = {'form': form, 'group':computer.computergroup, 'computer':computer, }
@@ -148,7 +148,7 @@ def delete_computer(request, computer_id):
     computer = get_object_or_404(Computer, pk=computer_id)
     group = get_object_or_404(ComputerGroup, pk=computer.computergroup.id)
     computer.delete()
-    return redirect('namer.views.show_group', group_id=group.id)
+    return redirect('show_group', group_id=group.id)
 
 #new network
 @login_required
@@ -164,7 +164,7 @@ def new_network(request, group_id):
             the_network = form.save(commit=False)
             the_network.computergroup = group
             the_network.save()
-            return redirect('namer.views.show_network', group.id)
+            return redirect('show_network', group.id)
     else:
         form = NetworkForm()
     context = {'form': form, 'group':group, }
@@ -184,7 +184,7 @@ def edit_network(request, network_id):
         if form.is_valid():
             the_network = form.save(commit=False)
             the_network.save()
-            return redirect('namer.views.show_network', network.computergroup.id)
+            return redirect('show_network', network.computergroup.id)
     else:
         form = NetworkForm(instance=network)
     context = {'form': form, 'group':network.computergroup, 'network':network, }
@@ -204,7 +204,7 @@ def delete_network(request, network_id):
     network = get_object_or_404(Network, pk=network_id)
     group = get_object_or_404(ComputerGroup, pk=network.computergroup.id)
     network.delete()
-    return redirect('namer.views.show_network', group_id=group.id)
+    return redirect('show_network', group_id=group.id)
 
 @csrf_exempt
 def checkin(request):

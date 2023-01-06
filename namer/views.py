@@ -101,7 +101,7 @@ def new_computer(request, group_id):
             the_computer.name = re.sub("^0+","",the_computer.name)
             the_computer.computergroup = group
             the_computer.save()
-            return redirect('namer.views.show_group', group.id)
+            return redirect('show_group', group.id)
     else:
         initial_name = next_name(group)
         form = ComputerForm(initial={'name': initial_name})

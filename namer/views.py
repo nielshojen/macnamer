@@ -12,6 +12,8 @@ from .models import *
 from .forms import *
 from django.db.models import Q, Max
 from datetime import datetime
+#from django.utils import timezone
+import pytz
 import json as simplejson
 import re
 
@@ -239,7 +241,7 @@ def checkin(request):
             ##if there are, create a new computer in that group with the serial
             computer = Computer(name=new_name, serial=serial_num, computergroup=computergroup)
             computer.save()
-    computer.last_checkin = datetime.now()
+    computer.last_checkin = timezone.now()
     computer.save()
     group = computer.computergroup
 
@@ -251,4 +253,4 @@ def checkin(request):
         if this_length > length:
             length = this_length
     c ={'name':computer.name, 'prefix':group.prefix, 'domain':group.domain, 'length':length, }
-    return HttpResponse(simplejson.dumps(c), mimetype="application/json")
+    return HttpResponse(simplejson.dumps(c), content_type="application/json")

@@ -1,19 +1,16 @@
-from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.contrib.auth.models import Permission, User
+from django.http import HttpResponse, Http404#, HttpResponseRedirect
+#from django.contrib.auth.models import Permission, User
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.conf import settings
+#from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
-from django.template import RequestContext, Template, Context
-from django.template.loader import get_template
-#from django.template.context_processors import csrf
+#from django.template import RequestContext, Template, Context
+#from django.template.loader import get_template
 from .models import *
 from .forms import *
-from django.db.models import Q, Max
+#from django.db.models import Q, Max
 from datetime import datetime
-#from django.utils import timezone
-import pytz
 import json as simplejson
 import re
 
@@ -241,7 +238,7 @@ def checkin(request):
             ##if there are, create a new computer in that group with the serial
             computer = Computer(name=new_name, serial=serial_num, computergroup=computergroup)
             computer.save()
-    computer.last_checkin = timezone.now()
+    computer.last_checkin = datetime.now()
     computer.save()
     group = computer.computergroup
 
@@ -252,5 +249,5 @@ def checkin(request):
         this_length = len(the_computer.name)
         if this_length > length:
             length = this_length
-    c ={'name':computer.name, 'prefix':group.prefix, 'domain':group.domain, 'length':length, }
+    c ={'name':computer.name, 'prefix':group.prefix,  'devider':group.devider, 'domain':group.domain, 'length':length, }
     return HttpResponse(simplejson.dumps(c), content_type="application/json")

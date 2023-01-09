@@ -1,60 +1,48 @@
-# -*- coding: utf-8 -*-
-import datetime
-from django.db import models, migrations
+from django.db import migrations, models
+import django.db.models.deletion
+
 
 class Migration(migrations.Migration):
 
     initial = True
 
     dependencies = [
-        ('namer', '__first__'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='computergroup',
+            name='ComputerGroup',
             fields=[
-                ('id', models.AutoField(verbose_name='id',
-                                        serialize=False,
-                                        auto_created=True,
-                                        primary_key=True)),
+                ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=200)),
-                ('prefix', models.CharField(max_length=200, null=True, blank=True)),
-                ('domain', models.CharField(max_length=200, null=True, blank=True)),
-                ('key', models.CharField(max_length=255, unique=True, null=True, blank=True)),
+                ('prefix', models.CharField(blank=True, max_length=200, null=True, verbose_name='Computer Name Prefix')),
+                ('devider', models.CharField(blank=True, choices=[('', 'None'), (' ', 'Space'), ('-', 'Dash')], default='', max_length=1)),
+                ('domain', models.CharField(blank=True, max_length=200, null=True, verbose_name='Computer Domain')),
+                ('key', models.CharField(blank=True, max_length=255, null=True, unique=True)),
             ],
-            options={
-                'ordering': ['name'],
-            },
         ),
         migrations.CreateModel(
-            name='computer',
+            name='Network',
             fields=[
-                ('id', models.AutoField(verbose_name='id',
-                                        serialize=False,
-                                        auto_created=True,
-                                        primary_key=True)),
-                ('computergroup', models.ForeignKey(to='computergroup', on_delete=models.CASCADE)),
-                ('name', models.CharField(max_length=200)),
-                ('serial', models.CharField(default='abc', max_length=200, unique=True)),
-                ('last_checkin', models.CharField(default=datetime.datetime(2012, 10, 10, 0, 0), max_length=200, null=True)),
-            ],
-            options={
-                'ordering': ['name'],
-            },
-        ),
-        migrations.CreateModel(
-            name='network',
-            fields=[
-                ('id', models.AutoField(verbose_name='id',
-                                        serialize=False,
-                                        auto_created=True,
-                                        primary_key=True)),
+                ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('network', models.CharField(max_length=200, unique=True)),
-                ('computergroup', models.ForeignKey(to='computergroup', on_delete=models.CASCADE)),
+                ('computergroup', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='namer.computergroup')),
             ],
             options={
                 'ordering': ['network'],
+            },
+        ),
+        migrations.CreateModel(
+            name='Computer',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('name', models.CharField(max_length=200, verbose_name='Computer Name')),
+                ('serial', models.CharField(max_length=200, unique=True, verbose_name='Serial Number')),
+                ('last_checkin', models.DateTimeField(blank=True, null=True)),
+                ('computergroup', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='namer.computergroup')),
+            ],
+            options={
+                'ordering': ['name'],
             },
         ),
     ]

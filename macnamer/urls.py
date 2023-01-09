@@ -1,5 +1,4 @@
-from django.conf.urls import include, url
-from django.urls import path
+from django.urls import path, include
 import django.contrib.auth.views as auth_views
 
 # Uncomment the next two lines to enable the admin:
@@ -7,12 +6,12 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^login/$', auth_views.LoginView.as_view(), name='login'),
-    url(r'^logout/$', auth_views.logout_then_login, name='logout'),
-    url(r'^changepassword/$', auth_views.PasswordChangeView.as_view(), name='changepassword'),
-    url(r'^changepassword/done/$', auth_views.PasswordChangeDoneView.as_view(),
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.logout_then_login, name='logout'),
+    path('changepassword/', auth_views.PasswordChangeView.as_view(), name='changepassword'),
+    path('changepassword/done/', auth_views.PasswordChangeDoneView.as_view(),
          name='password_change_done'),
-   	url(r'^', include('namer.urls')),
-    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    url(r'^admin/', admin.site.urls),
+   	path('', include('namer.urls')),
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
+    path('admin/', admin.site.urls),
 ]

@@ -33,8 +33,9 @@ The easiest way of running this is by running it in Docker or Kubernetes.
 Several options, such as the timezone and admin password are customizable using environment variables.
 
 * ``ADMIN_PASS``: The default admin's password. This is only set if there are no other superusers, so if you choose your own admin username and password later on, this won't be created.
-* ``DOCKER_MACNAMER_TZ``: The desired [timezone](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Defaults to ``Europe/London``.
-* ``DOCKER_MACNAMER_ADMINS``: The admin user's details. Defaults to ``Docker User, docker@localhost``.
+* ``MACNAMER_TZ``: The desired [timezone](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Defaults to ``Europe/London``.
+* ``MACNAMER_ADMINS``: The admin user's details. Defaults to ``Docker User, docker@localhost``.
+* ``SECRET_KEY``: The Django secret key. This key is mostly used to sign session cookies. In production you should probalby set your own. Defaults to ``2&lakkwf+r78)9u+30&+1=zc3()1^s2oqrbxr5qe8z_@xm2a&4``.
 
 If you require more advanced settings, for example if you want to hide certain plugins from certain Business Units or if you have a plugin that needs settings, you can override ``settings.py`` with your own. A good starting place can be found on this image's [Github repository](https://github.com/grahamgilbert/macadmins-macnamer/blob/master/settings.py). To use your own ``settings.py`` file, use the ``-v`` option:
 
@@ -62,7 +63,7 @@ Once that's done, dump your current DB to a file. This exmaple dumps the file in
 
 Next rename the current DB file so it doesn't get loaded on next startup:
 
-```mv macnamer.db macnamer_old.db```
+```mv db/macnamer.db db/macnamer_old.db```
 
 Stop the docker, set the environment variables for postgres as described above and start the docker again. Import the data to postgres:
 

@@ -23,7 +23,8 @@ RUN apt-get -y install \
     python-setuptools \
     libpq-dev \
     python3-dev \
-    python3-pip
+    python3-pip \
+    postgresql-client
 
 #RUN git clone --branch dev https://github.com/nielshojen/macnamer.git $APP_DIR
 ADD ./ $APP_DIR

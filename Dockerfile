@@ -1,6 +1,6 @@
 # Macnamer Dockerfile
 # Version 0.1
-FROM phusion/passenger-customizable:0.9.35
+FROM phusion/passenger-customizable:1.0.0
 
 ARG BUILDPLATFORM linux/amd64,linux/arm64
 

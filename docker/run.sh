@@ -9,7 +9,7 @@ if [ "$MIGRATE_FROM_SOUTH" = "True" ] ; then
   find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
   find . -path "*/migrations/*.pyc"  -delete
   python3 manage.py makemigrations --noinput
-  python manage.py migrate --fake-initial
+  python3 manage.py migrate --fake-initial
 else
   python3 manage.py makemigrations --noinput
   python3 manage.py migrate --noinput

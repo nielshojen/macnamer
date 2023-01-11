@@ -4,12 +4,6 @@ from django.db.models.signals import post_save
 import random
 import string
 
-DEVIDERS = (
-    ('', 'None'),
-    (' ', 'Space'),
-    ('-', 'Dash'),
-)
-
 # Create your models here.
 def GenerateKey():
     key = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(128))
@@ -23,7 +17,7 @@ class ComputerGroup(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=200)
     prefix = models.CharField(max_length=200, verbose_name="Computer Name Prefix", blank=True, null=True)
-    devider = models.CharField(max_length=1, choices=DEVIDERS, default='', blank=True)
+    devider = models.CharField(max_length=1, choices=[('', 'None'), (' ', 'Space'), ('-', 'Dash')], default='', blank=True)
     domain = models.CharField(max_length=200, verbose_name="Computer Domain", blank=True, null=True)
     key = models.CharField(max_length=255, unique=True, blank=True, null=True)
     def save(self):

@@ -27,19 +27,19 @@ RUN apt-get -y install \
 ADD ./ $APP_DIR
 RUN pip install -r $APP_DIR/setup/requirements.txt
 RUN mkdir -p /etc/my_init.d
-ADD nginx/nginx-env.conf /etc/nginx/main.d/
-ADD nginx/macnamer.conf /etc/nginx/sites-enabled/macnamer.conf
-ADD settings.py $APP_DIR/macnamer/
+ADD docker/nginx/nginx-env.conf /etc/nginx/main.d/
+ADD docker/nginx/macnamer.conf /etc/nginx/sites-enabled/macnamer.conf
+ADD docker/settings.py $APP_DIR/macnamer/
 RUN mkdir -p $APP_DIR/macnamer/db
-ADD settings_import.py $APP_DIR/macnamer/
-ADD passenger_wsgi.py $APP_DIR/
-ADD django/management/ $APP_DIR/namer/management/
-ADD run.sh /etc/my_init.d/run.sh
+ADD docker/settings_import.py $APP_DIR/macnamer/
+ADD docker/passenger_wsgi.py $APP_DIR/
+ADD docker/django/management/ $APP_DIR/namer/management/
+ADD docker/run.sh /etc/my_init.d/run.sh
 RUN rm -f /etc/service/nginx/down
 RUN rm -f /etc/nginx/sites-enabled/default
 
 EXPOSE 8000
 
-VOLUME ["/home/app/macnamer/db"]
+VOLUME [ "/home/app/macnamer/settings.py", "/home/app/macnamer/db"]
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

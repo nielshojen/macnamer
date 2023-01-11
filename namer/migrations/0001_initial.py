@@ -16,7 +16,6 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('name', models.CharField(max_length=200)),
                 ('prefix', models.CharField(blank=True, max_length=200, null=True, verbose_name='Computer Name Prefix')),
-                ('devider', models.CharField(blank=True, choices=[('', 'None'), (' ', 'Space'), ('-', 'Dash')], default='', max_length=1)),
                 ('domain', models.CharField(blank=True, max_length=200, null=True, verbose_name='Computer Domain')),
                 ('key', models.CharField(blank=True, max_length=255, null=True, unique=True)),
             ],

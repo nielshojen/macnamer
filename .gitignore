@@ -7,5 +7,4 @@ local_settings.py
 *.db
 macnamer.db
 macnamer/settings.py
-scripts/macnamer*.pkg
-scripts/Python.framework
+*/dockerdata*

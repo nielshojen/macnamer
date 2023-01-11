@@ -1,0 +1,8 @@
+.git/*
+.vscode/*
+*.pyc
+*/docker*
+*/dockerdata*
+Dockerfile
+Makefile
+README.md

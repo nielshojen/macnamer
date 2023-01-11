@@ -1,3 +1,0 @@
-pyobjc
-requests
---no-binary :all:

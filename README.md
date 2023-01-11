@@ -1,6 +1,6 @@
 # Macnamer
 
-Macnamer is a combination of a Django web app and a script to run on your client Macs with the goal of setting the name of your Macs.
+Macnamer is a combination of a Django web app and a script to run on your client Macs with the goal of setting the name of your Macs. This is a drop in replacement for [MacNamer](https://github.com/macadmins/macnamer)
 
 ## Why?
 
@@ -51,6 +51,24 @@ There is also the option of using a postgres database instead, which will can be
 * ``DB_NAME``: Name of the database. Required.
 * ``DB_USER``: Username for the database. Required.
 * ``DB_PASS``: Password for the database. Required.
+
+### Migrating data from SQLite to Postgres (in Docker)
+
+If you are running v1.0 of this image or the original [MacNamer](https://github.com/macadmins/macnamer), I recommend starting with an upgrade to v2+ of this image, as it should take care of all database migrations before the move to postgres.
+
+Once that's done, dump your current DB to a file. This exmaple dumps the file in the same folder as the SQLite DB file:
+
+```python3 manage.py dumpdata --natural-foreign --natural-primary > db/macnamer_export.json```
+
+Next rename the current DB file so it doesn't get loaded on next startup:
+
+```mv macnamer.db macnamer_old.db```
+
+Stop the docker, set the environment variables for postgres as described above and start the docker again. Import the data to postgres:
+
+```python3 manage.py loaddata db/macnamer_export.json```
+
+NB: Remember to back up your data before starting this!
 
 ### Running the Macnamer Container
 

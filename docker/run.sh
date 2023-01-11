@@ -5,7 +5,7 @@ ADMIN_PASS=${ADMIN_PASS:-}
 mkdir -p db
 chown -R app:app $APP_DIR
 
-if [ $(echo ".tables" | python3 manage.py dbshell | tr " " "\n" | grep south) ] ; then
+if [ ! ${DB_HOST} ] && [ $(echo ".tables" | python3 manage.py dbshell | tr " " "\n" | grep south) ] ; then
   echo "Old Macnamer DB detected - need tp do a bit of work"
   echo ".tables" | python3 manage.py dbshell | tr " " "\n" | grep south | sed 's/^/DROP TABLE /g' | sed 's/$/;/g' | python3 manage.py dbshell
   python3 manage.py migrate --fake-initial

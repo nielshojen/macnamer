@@ -51,6 +51,6 @@ else:
 # Read secret key from the $SECRET_KEY env var, or
 # set a default one
 if getenv('SECRET_KEY'):
-    ALLOWED_HOSTS = getenv('SECRET_KEY')
+    SECRET_KEY = getenv('SECRET_KEY')
 else:
-    ALLOWED_HOSTS = ['2&lakkwf+r78)9u+30&+1=zc3()1^s2oqrbxr5qe8z_@xm2a&4']
+    SECRET_KEY = ['2&lakkwf+r78)9u+30&+1=zc3()1^s2oqrbxr5qe8z_@xm2a&4']

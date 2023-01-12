@@ -1,6 +1,5 @@
 # Macnamer Dockerfile
-# Version 0.1
-FROM phusion/passenger-customizable:1.0.0
+FROM phusion/passenger-customizable:latest
 
 ARG BUILDPLATFORM linux/amd64,linux/arm64
 
@@ -10,22 +9,26 @@ ENV APP_DIR /home/app/macnamer
 ENV TZ Europe/Copenhagen
 ENV DOCKER_MACNAMER_TZ Europe/Copenhagen
 ENV DOCKER_MACNAMER_ADMINS Docker User, docker@localhost
-ENV DOCKER_MACNAMER_LANG en_GB
+ENV DOCKER_MACNAMER_LANG en_US
 
 # Use baseimage-docker's init process.
 CMD ["/sbin/my_init"]
 RUN apt-get update
+RUN apt-get upgrade -y
 RUN /pd_build/utilities.sh
 RUN /pd_build/python.sh
 
 RUN apt-get -y install \
+    build-essential \
     python-setuptools \
     libpq-dev \
-    python-dev \
-    python-pip
+    python3-dev \
+    python3-pip \
+    postgresql-client
 
+#RUN git clone --branch dev https://github.com/nielshojen/macnamer.git $APP_DIR
 ADD ./ $APP_DIR
-RUN pip install -r $APP_DIR/setup/requirements.txt
+RUN pip3 install -r $APP_DIR/setup/requirements.txt
 RUN mkdir -p /etc/my_init.d
 ADD docker/nginx/nginx-env.conf /etc/nginx/main.d/
 ADD docker/nginx/macnamer.conf /etc/nginx/sites-enabled/macnamer.conf
@@ -40,6 +43,6 @@ RUN rm -f /etc/nginx/sites-enabled/default
 
 EXPOSE 8000
 
-VOLUME [ "/home/app/macnamer/settings.py", "/home/app/macnamer/db"]
+VOLUME ["/home/app/macnamer/db"]
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

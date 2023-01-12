@@ -1,7 +1,4 @@
-Django==1.5.3
-South==0.8.2
-django-bootstrap-toolkit==2.15.0
-docutils==0.11
-puppetdb==0.0.1
-requests==2.0.0
-wsgiref==0.1.2
+Django==4.1.5
+django-bootstrap-v5==1.0.11
+docutils==0.19
+psycopg2==2.9.5

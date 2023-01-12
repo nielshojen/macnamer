@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% load bootstrap_toolkit %}
+{% load bootstrap5 %}
 {% block nav %}
 {% if perms.namer.delete_network %}
 <li><a href="#myModal" data-toggle="modal"><i class="icon-remove icon-white"></i> Network</a></li>
@@ -14,7 +14,7 @@
 	
         <table>
 	
-            {{ form|as_bootstrap }}
+            {% bootstrap_form form %}
         </table>
         <p><button type="submit" class="btn primary">Save</button></p>
     </form>
@@ -29,7 +29,7 @@
 	  </div>
 	  <div class="modal-footer">
 	    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-	    <a class="btn btn-danger" href="{% url 'namer.views.delete_network' network.id %}">Delete Network</a>
+	    <a class="btn btn-danger" href="{% url 'delete_network' network.id %}">Delete Network</a>
 	  </div>
 	</div>
 {% endblock %}

@@ -1,53 +1,47 @@
-# -*- coding: utf-8 -*-
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from django.db import migrations, models
+import django.db.models.deletion
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'ComputerGroup'
-        db.create_table('namer_computergroup', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('prefix', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('domain', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-        ))
-        db.send_create_signal('namer', ['ComputerGroup'])
+    initial = True
 
-        # Adding model 'Computer'
-        db.create_table('namer_computer', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('computergroup', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['namer.ComputerGroup'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
-        ))
-        db.send_create_signal('namer', ['Computer'])
+    dependencies = [
+    ]
 
-
-    def backwards(self, orm):
-        # Deleting model 'ComputerGroup'
-        db.delete_table('namer_computergroup')
-
-        # Deleting model 'Computer'
-        db.delete_table('namer_computer')
-
-
-    models = {
-        'namer.computer': {
-            'Meta': {'object_name': 'Computer'},
-            'computergroup': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['namer.ComputerGroup']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
-        },
-        'namer.computergroup': {
-            'Meta': {'object_name': 'ComputerGroup'},
-            'domain': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'prefix': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
-        }
-    }
-
-    complete_apps = ['namer']
+    operations = [
+        migrations.CreateModel(
+            name='ComputerGroup',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('name', models.CharField(max_length=200)),
+                ('prefix', models.CharField(blank=True, max_length=200, null=True, verbose_name='Computer Name Prefix')),
+                ('domain', models.CharField(blank=True, max_length=200, null=True, verbose_name='Computer Domain')),
+                ('key', models.CharField(blank=True, max_length=255, null=True, unique=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Network',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('network', models.CharField(max_length=200, unique=True)),
+                ('computergroup', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='namer.computergroup')),
+            ],
+            options={
+                'ordering': ['network'],
+            },
+        ),
+        migrations.CreateModel(
+            name='Computer',
+            fields=[
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('name', models.CharField(max_length=200, verbose_name='Computer Name')),
+                ('serial', models.CharField(max_length=200, unique=True, verbose_name='Serial Number')),
+                ('last_checkin', models.DateTimeField(blank=True, null=True)),
+                ('computergroup', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='namer.computergroup')),
+            ],
+            options={
+                'ordering': ['name'],
+            },
+        ),
+    ]

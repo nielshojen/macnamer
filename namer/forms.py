@@ -1,10 +1,10 @@
 from django import forms
-from models import *
+from .models import *
 
 class ComputerGroupForm(forms.ModelForm):
     class Meta:
         model = ComputerGroup
-        fields = ('name','prefix','domain',)
+        fields = ('name','prefix','devider','domain',)
 
 class ComputerForm(forms.ModelForm):
     class Meta:

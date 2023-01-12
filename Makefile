@@ -10,9 +10,10 @@ NAME:=macnamer
 TAG:=latest
 PLUGIN_DIR=/tmp/plugins
 
-DOCKER_RUN_COMMON=--name="$(NAME)" -p ${MACNAMER_PORT}:8000 --link $(DB_CONTAINER_NAME):db -e ADMIN_PASS=${ADMIN_PASS} -e DB_NAME=$(DB_NAME) -e DB_USER=$(DB_USER) -e DB_PASS=$(DB_PASS) ${DOCKER_USER}/${NAME}:${TAG}
+DOCKER_RUN_POSTGRES=--name="$(NAME)" -p ${MACNAMER_PORT}:8000 --link $(DB_CONTAINER_NAME):db -v $(shell pwd)/dockerdata/db:/home/app/macnamer/db -e ADMIN_PASS=${ADMIN_PASS} -e DB_NAME=$(DB_NAME) -e DB_USER=$(DB_USER) -e DB_PASS=$(DB_PASS) ${DOCKER_USER}/${NAME}:${TAG}
 
-#DOCKER_RUN_COMMON=--name="$(NAME)" -p ${MACNAMER_PORT}:8000 -v /Users/niels.hojen/src/macnamer/dockerdata/db:/home/app/macnamer/db -e ADMIN_PASS=${ADMIN_PASS} ${DOCKER_USER}/${NAME}:${TAG}
+DOCKER_RUN=--name="$(NAME)" -p ${MACNAMER_PORT}:8000 -v $(shell pwd)/dockerdata/db:/home/app/macnamer/db -e ADMIN_PASS=${ADMIN_PASS} ${DOCKER_USER}/${NAME}:${TAG}
+
 
 all: build
 
@@ -23,7 +24,10 @@ build-nocache:
 	docker build --no-cache --tag "${DOCKER_USER}/${NAME}:${TAG}" .
 
 run:
-	docker run -d ${DOCKER_RUN_COMMON}
+	docker run -d ${DOCKER_RUN}
+
+run-postgres:
+	docker run -d ${DOCKER_RUN_POSTGRES}
 
 interactive:
 	docker run -i ${DOCKER_RUN_COMMON}

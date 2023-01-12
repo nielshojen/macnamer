@@ -1,22 +1,17 @@
-from django.conf.urls import patterns, include, url
+from django.urls import path, include
+import django.contrib.auth.views as auth_views
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('',
-    # Examples:
-    
-    # url(r'^macnamer/', include('macnamer.foo.urls')),
-    url(r'^login/$', 'django.contrib.auth.views.login'),
-    url(r'^logout/$', 'django.contrib.auth.views.logout_then_login'),
-    url(r'^changepassword/$', 'django.contrib.auth.views.password_change'),
-    url(r'^changepassword/done/$', 'django.contrib.auth.views.password_change_done'),
-   	url(r'^', include('namer.urls')),
-    # Uncomment the admin/doc line below to enable admin documentation:
-    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
-    #url(r'^$', 'namer.views.index', name='home'),
-)
+urlpatterns = [
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.logout_then_login, name='logout'),
+    path('changepassword/', auth_views.PasswordChangeView.as_view(), name='changepassword'),
+    path('changepassword/done/', auth_views.PasswordChangeDoneView.as_view(),
+         name='password_change_done'),
+   	path('', include('namer.urls')),
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
+    path('admin/', admin.site.urls),
+]

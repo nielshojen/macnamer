@@ -14,14 +14,43 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': os.path.join(PROJECT_DIR, 'macnamer.db'),                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',              # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': os.path.join(PROJECT_DIR, 'db/macnamer.db'), # Or path to database file if using sqlite3.
+        'USER': '',                                          # Not used with sqlite3.
+        'PASSWORD': '',                                      # Not used with sqlite3.
+        'HOST': '',                                          # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                                          # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+# PG Database
+host = None
+port = None
+
+if 'DB_USER' in os.environ:
+    if 'DB_HOST' in os.environ:
+        host = os.environ.get('DB_HOST')
+        port = os.environ.get('DB_PORT', '5432')
+
+    elif 'DB_PORT_5432_TCP_ADDR' in os.environ:
+        host = os.environ.get('DB_PORT_5432_TCP_ADDR')
+        port = os.environ.get('DB_PORT_5432_TCP_PORT', '5432')
+
+    else:
+        host = 'db'
+        port = '5432'
+
+if host and port:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ['DB_NAME'],
+            'USER': os.environ['DB_USER'],
+            'PASSWORD': os.environ['DB_PASS'],
+            'HOST': host,
+            'PORT': port,
+        }
+    }
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -98,10 +127,31 @@ SECRET_KEY = '6%y8=x5(#ufxd*+d+-ohwy0b$5z^cla@7tvl@n55_h_cex0qat'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
 )
 
-MIDDLEWARE_CLASSES = (
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(PROJECT_DIR, 'templates'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.template.context_processors.request',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -135,8 +185,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'namer',
-    'south',
-    'bootstrap_toolkit',
+    'bootstrap5',
 )
 
 # A sample logging configuration. The only tangible logging

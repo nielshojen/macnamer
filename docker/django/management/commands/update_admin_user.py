@@ -39,3 +39,4 @@ class Command(BaseCommand):
             print(f'{username} updated')
         else:
             print(f'There are already {su_count} superusers')
+            

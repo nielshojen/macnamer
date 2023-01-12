@@ -76,7 +76,8 @@ Start with a clean postgres by opening a shell:
 
 And cleaning out the content types:
 
-```from django.contrib.contenttypes.models import ContentType
+```
+from django.contrib.contenttypes.models import ContentType
 ContentType.objects.all().delete()
 quit()
 ```

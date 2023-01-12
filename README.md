@@ -36,6 +36,7 @@ Several options, such as the timezone and admin password are customizable using 
 * ``MACNAMER_TZ``: The desired [timezone](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Defaults to ``Europe/London``.
 * ``MACNAMER_ADMINS``: The admin user's details. Defaults to ``Docker User, docker@localhost``.
 * ``SECRET_KEY``: The Django secret key. This key is mostly used to sign session cookies. In production you should probalby set your own. Defaults to ``2&lakkwf+r78)9u+30&+1=zc3()1^s2oqrbxr5qe8z_@xm2a&4``.
+* ``HOST_NAME``: Set the host name of your instance - might berequired if you do not have control over the load balancer or proxy in front of your instance (see [the Django documentation](https://docs.djangoproject.com/en/4.1/ref/settings/#csrf-trusted-origins)).
 
 If you require more advanced settings, for example if you want to hide certain plugins from certain Business Units or if you have a plugin that needs settings, you can override ``settings.py`` with your own. A good starting place can be found on this image's [Github repository](https://github.com/grahamgilbert/macadmins-macnamer/blob/master/settings.py). To use your own ``settings.py`` file, use the ``-v`` option:
 

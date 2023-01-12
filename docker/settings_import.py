@@ -19,15 +19,15 @@ else:
              )
 
 # Read the preferred time zone from $MACNAMER_TZ, use system locale or
-# set to 'America/New_York' if neither are set
+# set to 'America/Chicago' if neither are set
 if getenv('MACNAMER_TZ'):
     if '/' in getenv('MACNAMER_TZ'):
         TIME_ZONE = getenv('MACNAMER_TZ')
-    else: TIME_ZONE = 'America/New_York'
+    else: TIME_ZONE = 'America/Chicago'
 elif getenv('TZ'):
     TIME_ZONE = getenv('TZ')
 else:
-    TIME_ZONE = 'America/New_York'
+    TIME_ZONE = 'America/Chicago'
 
 # Read the preferred language code from $DOCKER_MACNAMER_LANG, use system locale or
 # set to 'en_US' if neither are set
@@ -54,3 +54,11 @@ if getenv('SECRET_KEY'):
     SECRET_KEY = getenv('SECRET_KEY')
 else:
     SECRET_KEY = ['2&lakkwf+r78)9u+30&+1=zc3()1^s2oqrbxr5qe8z_@xm2a&4']
+
+# Setting HOST_NAME might be needed depending on loadbalancers and ingests
+if getenv("HOST_NAME"):
+    HOST_NAME = getenv("HOST_NAME")
+    CSRF_TRUSTED_ORIGINS = [getenv("HOST_NAME")]
+else:
+    HOST_NAME = "http://localhost"
+    CSRF_TRUSTED_ORIGINS = []

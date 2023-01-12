@@ -1,5 +1,6 @@
 import os
 # Django settings for macnamer project.
+from . import settings_import
 
 PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir))
 
@@ -9,9 +10,13 @@ TEMPLATE_DEBUG = DEBUG
 ADMINS = (
 )
 
-MANAGERS = ADMINS
+MANAGERS = settings_import.ADMINS
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = settings_import.ALLOWED_HOSTS
+
+SECRET_KEY = settings_import.SECRET_KEY
+
+CSRF_TRUSTED_ORIGINS = settings_import.CSRF_TRUSTED_ORIGINS
 
 DATABASES = {
     'default': {
@@ -62,9 +67,12 @@ USE_I18N = True
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale.
 USE_L10N = True
+LANGUAGE_CODE = settings_import.LANGUAGE_CODE
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
+
+TIME_ZONE = settings_import.TIME_ZONE
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"

@@ -1,6 +1,6 @@
 # Macnamer
 
-Macnamer is a combination of a Django web app and a script to run on your client Macs with the goal of setting the name of your Macs. This is a drop in replacement for [MacNamer](https://github.com/macadmins/macnamer)
+Macnamer is a combination of a Django web app and a script to run on your client Macs with the goal of setting the name of your Macs. This is a drop in replacement for [MacNamer](https://hub.docker.com/r/macadmins/macnamer)
 
 ## Why?
 
@@ -56,7 +56,9 @@ There is also the option of using a postgres database instead, which will can be
 
 ### Migrating data from SQLite to Postgres (in Docker)
 
-If you are running v1.0 of this image or the original [MacNamer](https://github.com/macadmins/macnamer), I recommend starting with an upgrade to v2+ of this image, as it should take care of all database migrations before the move to postgres.
+NB: Remember to back up your data before starting this!
+
+If you are running v1.0 of this image or the original [MacNamer](https://hub.docker.com/r/macadmins/macnamer), I recommend starting with an upgrade to v2+ of this image, as it should take care of all database migrations before the move to postgres.
 
 Once that's done, dump your current DB to a file. This exmaple dumps the file in the same folder as the SQLite DB file:
 
@@ -66,11 +68,22 @@ Next rename the current DB file so it doesn't get loaded on next startup:
 
 ```mv db/macnamer.db db/macnamer_old.db```
 
-Stop the docker, set the environment variables for postgres as described above and start the docker again. Import the data to postgres:
+Stop the docker, set the environment variables for postgres as described above and start the docker again.
+
+Start with a clean postgres by opening a shell:
+
+```python3 manage.py shell```
+
+And cleaning out the content types:
+
+```from django.contrib.contenttypes.models import ContentType
+ContentType.objects.all().delete()
+quit()
+```
+
+And then import your data back into the database:
 
 ```python3 manage.py loaddata db/macnamer_export.json```
-
-NB: Remember to back up your data before starting this!
 
 ### Running the Macnamer Container
 

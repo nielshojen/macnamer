@@ -29,11 +29,11 @@ elif getenv('TZ'):
 else:
     TIME_ZONE = 'America/Chicago'
 
-# Read the preferred language code from $DOCKER_MACNAMER_LANG, use system locale or
+# Read the preferred language code from $MACNAMER_LANG, use system locale or
 # set to 'en_US' if neither are set
-if getenv('DOCKER_MACNAMER_LANG'):
-    if '_' in getenv('DOCKER_MACNAMER_LANG'):
-        LANGUAGE_CODE = getenv('DOCKER_MACNAMER_LANG')
+if getenv('MACNAMER_LANG'):
+    if '_' in getenv('MACNAMER_LANG'):
+        LANGUAGE_CODE = getenv('MACNAMER_LANG')
     else:
         LANGUAGE_CODE = 'en_US'
 # elif locale.getdefaultlocale():

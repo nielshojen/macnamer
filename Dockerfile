@@ -21,6 +21,7 @@ RUN set -ex \
     libpq \
     nginx
 
+#RUN git clone --branch dev https://github.com/nielshojen/macnamer.git $APP_DIR
 ADD ./ $APP_DIR
 RUN pip3 install -r $APP_DIR/setup/requirements.txt
 RUN pip3 install gunicorn

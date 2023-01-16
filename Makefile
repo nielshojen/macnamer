@@ -14,7 +14,6 @@ DOCKER_RUN_POSTGRES=--name="$(NAME)" -p ${MACNAMER_PORT}:${MACNAMER_PORT} --link
 
 DOCKER_RUN=--name="$(NAME)" -p ${MACNAMER_PORT}:${MACNAMER_PORT} -v $(shell pwd)/dockerdata/db:/home/app/macnamer/db -e DEBUG="False" -e HOST_NAME="http://localhost:8000" -e ADMIN_PASS=${ADMIN_PASS} ${DOCKER_USER}/${NAME}:${TAG}
 
-
 all: build
 
 build:

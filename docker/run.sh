@@ -6,7 +6,6 @@ echo "Starting nginx ..."
 cd $APP_DIR
 ADMIN_PASS=${ADMIN_PASS:-}
 mkdir -p db
-#chown -R www:www $APP_DIR
 
 if [ ! ${DB_HOST} ] && [ $(echo ".tables" | python3 manage.py dbshell | tr " " "\n" | grep south) ] ; then
   echo "Old Macnamer DB detected - need tp do a bit of work"
@@ -22,7 +21,6 @@ if [ ! -z "$ADMIN_PASS" ] ; then
 else
   python3 manage.py update_admin_user --username=admin --password=password
 fi
-
 
 export PYTHONPATH=$PYTHONPATH:$APP_DIR
 export DJANGO_SETTINGS_MODULE='macnamer.settings'

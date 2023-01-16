@@ -98,7 +98,7 @@ And then import your data back into the database:
 ## Changelog
 
 * v1.0: Close as makes no odds to the original [MacNamer](https://hub.docker.com/r/macadmins/macnamer). Just a few tweaks to make it work on newer kubernetes versions
-* v2.0: Updated to Django 4.1.5. Added support for Postgres
+* v2.0: Updated to Django 4.1.5. Added support for Postgres. Added support for a choise of different dividers between prefix and number.
 * v2.1: Changed from [phusion/passenger-customizable](https://hub.docker.com/r/phusion/passenger-customizable) to [python-alpine](https://hub.docker.com/_/python). Image now passes Snyk scanning.
 
 ## Acknowledgements

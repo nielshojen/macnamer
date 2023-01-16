@@ -10,10 +10,9 @@ NAME:=macnamer
 TAG:=latest
 PLUGIN_DIR=/tmp/plugins
 
-DOCKER_RUN_POSTGRES=--name="$(NAME)" -p ${MACNAMER_PORT}:8000 --link $(DB_CONTAINER_NAME):db -v $(shell pwd)/dockerdata/db:/home/app/macnamer/db -e ADMIN_PASS=${ADMIN_PASS} -e DB_NAME=$(DB_NAME) -e DB_USER=$(DB_USER) -e DB_PASS=$(DB_PASS) ${DOCKER_USER}/${NAME}:${TAG}
+DOCKER_RUN_POSTGRES=--name="$(NAME)" -p ${MACNAMER_PORT}:${MACNAMER_PORT} --link $(DB_CONTAINER_NAME):db -v $(shell pwd)/dockerdata/db:/home/app/macnamer/db -e ADMIN_PASS=${ADMIN_PASS} -e DB_NAME=$(DB_NAME) -e DB_USER=$(DB_USER) -e DB_PASS=$(DB_PASS) ${DOCKER_USER}/${NAME}:${TAG}
 
-DOCKER_RUN=--name="$(NAME)" -p ${MACNAMER_PORT}:8000 -v $(shell pwd)/dockerdata/db:/home/app/macnamer/db -e ADMIN_PASS=${ADMIN_PASS} ${DOCKER_USER}/${NAME}:${TAG}
-
+DOCKER_RUN=--name="$(NAME)" -p ${MACNAMER_PORT}:${MACNAMER_PORT} -v $(shell pwd)/dockerdata/db:/home/app/macnamer/db -e DEBUG="False" -e HOST_NAME="http://localhost:8000" -e ADMIN_PASS=${ADMIN_PASS} ${DOCKER_USER}/${NAME}:${TAG}
 
 all: build
 

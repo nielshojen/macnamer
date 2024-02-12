@@ -1,5 +1,7 @@
 import os
+
 # Django settings for macnamer project.
+DISPLAY_NAME = 'Macnamer'
 from . import settings_import
 
 PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir))
@@ -141,6 +143,8 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.template.context_processors.request',
                 'django.contrib.messages.context_processors.messages',
+                'macnamer.context_processors.app_version',
+                'macnamer.context_processors.django_version',
             ],
         },
     },
@@ -175,12 +179,10 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'namer',
-    'bootstrap5',
+    'django_bootstrap5',
 )
 
 # A sample logging configuration. The only tangible logging

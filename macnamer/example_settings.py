@@ -1,18 +1,23 @@
 import os
+from pathlib import Path
 
 # Django settings for macnamer project.
 DISPLAY_NAME = 'Macnamer'
 
-PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir))
-
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir))
+
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
+
+ALLOWED_HOSTS = ['*']
+
+CSRF_TRUSTED_ORIGINS = []
 
 DATABASES = {
     'default': {
@@ -54,16 +59,6 @@ if host and port:
         }
     }
 
-# Local time zone for this installation. Choices can be found here:
-# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'Europe/London'
-
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-gb'
-
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
@@ -76,6 +71,10 @@ USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
+
+TIME_ZONE = 'Europe/Copenhagen'
+
+LANGUAGE_CODE = 'en-gb'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -113,6 +112,7 @@ STATICFILES_DIRS = (
 
 LOGIN_URL='/login/'
 LOGIN_REDIRECT_URL='/'
+LOGOUT_REDIRECT_URL = '/'
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -148,12 +148,17 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.template.context_processors.request',
                 'django.contrib.messages.context_processors.messages',
+                'macnamer.context_processors.display_name',
                 'macnamer.context_processors.app_version',
                 'macnamer.context_processors.django_version',
             ],
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
@@ -186,9 +191,27 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'rest_framework',
+    'rest_framework_api_key',
+    'drf_spectacular',
     'namer',
     'django_bootstrap5',
+    'health_check',
+    'health_check.db',
+    'health_check.storage',
+    'health_check.contrib.migrations',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Macnamer API',
+    'DESCRIPTION': 'Gives a unique name to endpoints based on their serialnumber',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -218,3 +241,61 @@ LOGGING = {
         },
     }
 }
+
+if os.environ.get('SAML_ROOT_URL') and os.environ.get('SAML_SIGNIN_URL') and os.environ.get('SAML_SIGNOUT_URL') and os.environ.get('SAML_IDP_IDENTIFIER') and os.environ.get('SAML_METADATA_URL'):
+    SAML_SESSION_COOKIE_NAME = 'saml_session'
+    import saml2
+    from saml2.saml import NAMEID_FORMAT_PERSISTENT
+    AUTHENTICATION_BACKENDS += ('djangosaml2.backends.Saml2Backend',)
+    INSTALLED_APPS += ['djangosaml2']
+    MIDDLEWARE.append('djangosaml2.middleware.SamlSessionMiddleware')
+    LOGIN_URL = '/saml2/login/'
+    SAML_CONFIG = {
+    'xmlsec_binary': '/usr/bin/xmlsec1',
+    'entityid': '%s/saml2/metadata/' % os.environ['SAML_ROOT_URL'],
+    'attribute_map_dir': os.path.join(BASE_DIR, 'attributemaps'),
+    'allow_unknown_attributes': True,
+    'service': {
+        'sp' : {
+            'authn_requests_signed': False,
+            "allow_unsolicited": True,
+            'want_assertions_signed': True,
+            'want_response_signed': False,
+            'allow_unknown_attributes': True,
+            'name': 'Federated Django SP',
+            'name_id_format': NAMEID_FORMAT_PERSISTENT,
+            'endpoints': {
+                'assertion_consumer_service': [
+                    ('%s/saml2/acs/' % os.environ['SAML_ROOT_URL'],
+                    saml2.BINDING_HTTP_POST),
+                    ],
+                'single_logout_service': [
+                    ('%s/saml2/ls/' % os.environ['SAML_ROOT_URL'],
+                    saml2.BINDING_HTTP_REDIRECT),
+
+                    ('%s/saml2/ls/post' % os.environ['SAML_ROOT_URL'],
+                    saml2.BINDING_HTTP_POST),
+                    ],
+                },
+            'required_attributes': ['uid'],
+            'idp': {
+                '%sa' % os.environ['SAML_IDP_IDENTIFIER']: {
+                    'single_sign_on_service': {
+                        saml2.BINDING_HTTP_REDIRECT: '%s' % os.environ['SAML_SIGNIN_URL'],
+                        },
+                    'single_logout_service': {
+                        saml2.BINDING_HTTP_REDIRECT: '%s' % os.environ['SAML_SIGNOUT_URL'],
+                        },
+                    },
+                },
+            },
+        },
+    'metadata': {
+        'local': [os.path.join(BASE_DIR, 'metadata.xml')],
+        'remote': [{"url": "%s" % os.environ['SAML_METADATA_URL']},],
+        },
+    'debug': 1,
+    'valid_for': 24,
+    }
+else:
+     LOGIN_URL='/login/'

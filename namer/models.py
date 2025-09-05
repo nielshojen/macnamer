@@ -4,7 +4,6 @@ from django.db.models.signals import post_save
 import random
 import string
 
-# Create your models here.
 def GenerateKey():
     key = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(128))
     try:
@@ -15,20 +14,22 @@ def GenerateKey():
 
 class ComputerGroup(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, verbose_name="Computer Group Name")
     prefix = models.CharField(max_length=200, verbose_name="Computer Name Prefix", blank=True, null=True)
-    devider = models.CharField(max_length=1, choices=[('', 'None'), (' ', 'Space'), ('-', 'Dash')], default='', blank=True)
+    divider = models.CharField(max_length=1, verbose_name="Name Devider", choices=[('', 'None'), (' ', '(Space)'), ('-', '-')], default='', blank=True)
     domain = models.CharField(max_length=200, verbose_name="Computer Domain", blank=True, null=True)
     key = models.CharField(max_length=255, unique=True, blank=True, null=True)
-    def save(self):
-        if not self.id:
+    def save(self, *args, **kwargs):
+        if not self.pk and not self.key:
             self.key = GenerateKey()
-        super(ComputerGroup, self).save()
+        super(ComputerGroup, self).save(*args, **kwargs)
     def __str__(self):
         if self.name:
             return self.name
         else:
             return self.id
+    class Meta:
+        ordering = ['id']
 
 class Network(models.Model):
     id = models.AutoField(primary_key=True)

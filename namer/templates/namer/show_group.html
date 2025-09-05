@@ -51,7 +51,7 @@
             <td>
                 {% if group.prefix %}
                 {% if perms.namer.change_computer %}
-                <a href="{% url 'edit_computer' computer.id %}">{{group.prefix}}{{group.devider}}{{ computer.name|leading_zeros:length }}</a>
+                <a href="{% url 'edit_computer' computer.id %}">{{group.prefix}}{{group.divider}}{{ computer.name|leading_zeros:length }}</a>
                 {% else %}
                 {{group.prefix}} {{ computer.name|leading_zeros:length }}
                 {% endif %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load django_bootstrap5 %}
+{% block nav %}
+<li><a href="{% url 'api_keys_list' %}">Back</a</li>
+{% endblock %}
+{% block content %}
+  <h1>Create API Key</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn primary">Create</button>
+  </form>
+{% endblock %}

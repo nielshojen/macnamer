@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load django_bootstrap5 %}
+{% block nav %}
+<li><a href="{% url 'api_keys_list' %}">Back</a</li>
+{% endblock %}
+{% block content %}
+  <h1>API Key Created</h1>
+  <p>Copy this key now:</p>
+  <pre style="white-space: pre-wrap; word-break: break-all;">{{ obj }}</pre>
+  <p>This secret is shown only once. Store it securely (e.g., secrets manager).</p>
+{% endblock %}

@@ -10,3 +10,6 @@ macnamer/settings.py
 scripts/macnamer*.pkg
 scripts/Python.framework
 dockerdata/
+venv
+env
+__pycache__

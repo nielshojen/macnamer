@@ -48,6 +48,14 @@ if getenv('DOCKER_MACNAMER_ALLOWED'):
 else:
     ALLOWED_HOSTS = ['*']
 
+# Set the display name from the $DOCKER_MACNAMER_DISPLAY_NAME env var, or
+# use the default
+if getenv('DOCKER_MACNAMER_DISPLAY_NAME'):
+    DISPLAY_NAME = getenv('DOCKER_MACNAMER_DISPLAY_NAME')
+else:
+    DISPLAY_NAME = 'Macnamer'
+
+
 # Read secret key from the $SECRET_KEY env var, or
 # set a default one
 if getenv('SECRET_KEY'):
@@ -62,3 +70,12 @@ if getenv("HOST_NAME"):
 else:
     HOST_NAME = "http://localhost"
     CSRF_TRUSTED_ORIGINS = []
+
+# Read the DEBUG setting from env var
+try:
+    if getenv('DOCKER_MACNAMER_DEBUG').lower() == 'true':
+        DEBUG = True
+    else:
+        DEBUG = False
+except Exception:
+    DEBUG = False

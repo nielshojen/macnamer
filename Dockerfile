@@ -1,14 +1,15 @@
 # Macnamer Dockerfile
-#FROM phusion/passenger-customizable:latest
-FROM python:3.11.1-alpine3.17
+FROM python:3.13.7-alpine3.22
 
 ARG BUILDPLATFORM linux/amd64,linux/arm64
 
-ENV APP_DIR /home/app/macnamer
-ENV TZ Europe/Copenhagen
-ENV MACNAMER_TZ Europe/Copenhagen
-ENV MACNAMER_ADMINS Docker User, docker@localhost
-ENV MACNAMER_LANG en_US
+ENV APP_DIR="/home/app/macnamer"
+ENV TZ="Europe/Copenhagen"
+ENV MACNAMER_TZ="Europe/Copenhagen"
+ENV MACNAMER_ADMINS="Docker User, docker@localhost"
+ENV MACNAMER_LANG="en_US"
+ENV DOCKER_MACNAMER_DEBUG="false"
+ENV DOCKER_MACNAMER_DISPLAY_NAME="Macnamer"
 
 RUN set -ex \
     && apk add --no-cache --virtual .build-deps \

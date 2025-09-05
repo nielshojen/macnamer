@@ -1,13 +1,18 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.http import require_http_methods, require_POST
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
-from .models import *
-from .forms import *
-
+from django.contrib import messages
+from rest_framework_api_key.models import APIKey
+import inspect
 import json as simplejson
 import re
+
+from .models import *
+from .forms import *
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -18,7 +23,6 @@ def get_client_ip(request):
     return ip
 
 def next_name(group):
-    # Start at 1, try to get a computer. If we fail, then the number is available.
     counter = 1
     if group.prefix:
         while True:
@@ -35,11 +39,9 @@ def next_name(group):
 
 @login_required
 def index(request):
-    #show table with computer groups
     groups = ComputerGroup.objects.all()
     context = {'user': request.user, 'groups':groups, }
     return render(request, 'namer/index.html', context)
-
 
 #new computer group
 @login_required
@@ -47,7 +49,6 @@ def index(request):
 @permission_required('namer.add_computergroup', login_url='/login/')
 def new_computer_group(request):
     context = {}
-    #context.update(csrf(request))
     if request.method == 'POST':
         form = ComputerGroupForm(request.POST)
         if form.is_valid():
@@ -66,7 +67,6 @@ def new_computer_group(request):
 def edit_computer_group(request, group_id):
     group = get_object_or_404(ComputerGroup, pk=group_id)
     context = {}
-    #context.update(csrf(request))
     if request.method == 'POST':
         form = ComputerGroupForm(request.POST, instance=group)
         if form.is_valid():
@@ -84,12 +84,10 @@ def edit_computer_group(request, group_id):
 def new_computer(request, group_id):
     group = get_object_or_404(ComputerGroup, pk=group_id)
     context = {}
-    #context.update(csrf(request))
     if request.method == 'POST':
         form = ComputerForm(request.POST)
         if form.is_valid():
             the_computer = form.save(commit=False)
-            ##strip the leading zeroes
             the_computer.name = re.sub("^0+","",the_computer.name)
             the_computer.computergroup = group
             the_computer.save()
@@ -108,7 +106,6 @@ def edit_computer(request, computer_id):
     computer = get_object_or_404(Computer, pk=computer_id)
 
     context = {}
-    #context.update(csrf(request))
     if request.method == 'POST':
         form = ComputerForm(request.POST, instance=computer)
         if form.is_valid():
@@ -120,12 +117,12 @@ def edit_computer(request, computer_id):
         form = ComputerForm(instance=computer)
     context = {'form': form, 'group':computer.computergroup, 'computer':computer, }
     return render(request, 'forms/edit_computer.html', context)
+
 #show computer group
 @login_required
 def show_group(request, group_id):
     group = get_object_or_404(ComputerGroup, pk=group_id)
     computers = group.computer_set.all()
-    ##need to get the longest number.
     length = 0
     for computer in computers:
         this_length = len(computer.name)
@@ -198,6 +195,7 @@ def delete_network(request, network_id):
     network.delete()
     return redirect('show_network', group_id=group.id)
 
+# client checkin
 @csrf_exempt
 def checkin(request):
     try:
@@ -245,5 +243,54 @@ def checkin(request):
         this_length = len(the_computer.name)
         if this_length > length:
             length = this_length
-    c ={'name':computer.name, 'prefix':group.prefix,  'devider':group.devider, 'domain':group.domain, 'length':length, }
+    c ={'name':computer.name, 'prefix':group.prefix,  'divider':group.divider, 'domain':group.domain, 'length':length, }
     return HttpResponse(simplejson.dumps(c), content_type="application/json")
+
+# api key management
+@staff_member_required
+def api_key_list(request):
+    qs = APIKey.objects.order_by("-created")
+    return render(request, "api_keys/list.html", {"keys": qs})
+
+@staff_member_required
+@require_http_methods(["GET", "POST"])
+def api_key_create(request):
+    if request.method == "POST":
+        form = APIKeyCreateForm(request.POST)
+        if form.is_valid():
+            kwargs = {"name": form.cleaned_data["name"]}
+            expires_value = form.cleaned_data.get("expires_at")
+            model_has_field = any(f.name == "expires_at" for f in APIKey._meta.get_fields())
+            create_key_params = inspect.signature(APIKey.objects.create_key).parameters
+            create_accepts_param = "expires_at" in create_key_params
+
+            if expires_value is not None and model_has_field and create_accepts_param:
+                kwargs["expires_at"] = expires_value
+
+            # Always use create_key(), never APIKey(...)
+            key, obj = APIKey.objects.create_key(**kwargs)
+            return render(request, "api_keys/create_done.html", {"key": key, "obj": obj})
+    else:
+        form = APIKeyCreateForm()
+
+    return render(request, "api_keys/create.html", {"form": form})
+
+@staff_member_required
+@require_POST
+def api_key_revoke(request, pk):
+    obj = get_object_or_404(APIKey, pk=pk)
+    if not obj.revoked:
+        obj.revoked = True
+        obj.save(update_fields=["revoked"])
+        messages.success(request, f"API key '{obj.name}' has been revoked.")
+    else:
+        messages.info(request, f"API key '{obj.name}' was already revoked.")
+    return redirect("api_keys_list")
+
+@staff_member_required
+@require_POST
+def api_key_delete(request, prefix):
+    obj = get_object_or_404(APIKey, prefix=prefix)
+    obj.delete()
+    messages.success(request, f"API key “{obj.name}” was deleted.")
+    return redirect("api_keys_list")

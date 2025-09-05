@@ -1,13 +1,16 @@
 import os
+from pathlib import Path
 
 # Django settings for macnamer project.
-DISPLAY_NAME = 'Macnamer'
 from . import settings_import
 
-PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir))
+DISPLAY_NAME = settings_import.DISPLAY_NAME
 
-DEBUG = False
+DEBUG = settings_import.DEBUG
 TEMPLATE_DEBUG = DEBUG
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.path.pardir))
 
 ADMINS = (
 )
@@ -111,6 +114,7 @@ STATICFILES_DIRS = (
 
 LOGIN_URL='/login/'
 LOGIN_REDIRECT_URL='/'
+LOGOUT_REDIRECT_URL = '/'
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -145,10 +149,15 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'macnamer.context_processors.app_version',
                 'macnamer.context_processors.django_version',
+                'macnamer.context_processors.display_name',
             ],
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
@@ -181,9 +190,27 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'rest_framework',
+    'rest_framework_api_key',
+    'drf_spectacular',
     'namer',
     'django_bootstrap5',
+    'health_check',
+    'health_check.db',
+    'health_check.storage',
+    'health_check.contrib.migrations',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Macnamer API',
+    'DESCRIPTION': 'Gives a unique name to endpoints based on their serialnumber',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -213,3 +240,61 @@ LOGGING = {
         },
     }
 }
+
+if os.environ.get('SAML_ROOT_URL') and os.environ.get('SAML_SIGNIN_URL') and os.environ.get('SAML_SIGNOUT_URL') and os.environ.get('SAML_IDP_IDENTIFIER') and os.environ.get('SAML_METADATA_URL'):
+    SAML_SESSION_COOKIE_NAME = 'saml_session'
+    import saml2
+    from saml2.saml import NAMEID_FORMAT_PERSISTENT
+    AUTHENTICATION_BACKENDS += ('djangosaml2.backends.Saml2Backend',)
+    INSTALLED_APPS += ['djangosaml2']
+    MIDDLEWARE.append('djangosaml2.middleware.SamlSessionMiddleware')
+    LOGIN_URL = '/saml2/login/'
+    SAML_CONFIG = {
+    'xmlsec_binary': '/usr/bin/xmlsec1',
+    'entityid': '%s/saml2/metadata/' % os.environ['SAML_ROOT_URL'],
+    'attribute_map_dir': os.path.join(BASE_DIR, 'attributemaps'),
+    'allow_unknown_attributes': True,
+    'service': {
+        'sp' : {
+            'authn_requests_signed': False,
+            "allow_unsolicited": True,
+            'want_assertions_signed': True,
+            'want_response_signed': False,
+            'allow_unknown_attributes': True,
+            'name': 'Federated Django SP',
+            'name_id_format': NAMEID_FORMAT_PERSISTENT,
+            'endpoints': {
+                'assertion_consumer_service': [
+                    ('%s/saml2/acs/' % os.environ['SAML_ROOT_URL'],
+                    saml2.BINDING_HTTP_POST),
+                    ],
+                'single_logout_service': [
+                    ('%s/saml2/ls/' % os.environ['SAML_ROOT_URL'],
+                    saml2.BINDING_HTTP_REDIRECT),
+
+                    ('%s/saml2/ls/post' % os.environ['SAML_ROOT_URL'],
+                    saml2.BINDING_HTTP_POST),
+                    ],
+                },
+            'required_attributes': ['uid'],
+            'idp': {
+                '%sa' % os.environ['SAML_IDP_IDENTIFIER']: {
+                    'single_sign_on_service': {
+                        saml2.BINDING_HTTP_REDIRECT: '%s' % os.environ['SAML_SIGNIN_URL'],
+                        },
+                    'single_logout_service': {
+                        saml2.BINDING_HTTP_REDIRECT: '%s' % os.environ['SAML_SIGNOUT_URL'],
+                        },
+                    },
+                },
+            },
+        },
+    'metadata': {
+        'local': [os.path.join(BASE_DIR, 'metadata.xml')],
+        'remote': [{"url": "%s" % os.environ['SAML_METADATA_URL']},],
+        },
+    'debug': 1,
+    'valid_for': 24,
+    }
+else:
+     LOGIN_URL='/login/'

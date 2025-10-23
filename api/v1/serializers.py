@@ -4,8 +4,7 @@ from namer.models import *
 class ComputerGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = ComputerGroup
-        # fields = '__all__'
-        fields = ["id", "name", "prefix", "divider", "domain"]
+        fields = '__all__'
 
 
 class NetworkSerializer(serializers.ModelSerializer):

@@ -2,9 +2,11 @@ import os
 from pathlib import Path
 
 # Django settings for macnamer project.
-DISPLAY_NAME = 'Macnamer'
+from . import settings_import
 
-DEBUG = False
+DISPLAY_NAME = settings_import.DISPLAY_NAME
+
+DEBUG = settings_import.DEBUG
 TEMPLATE_DEBUG = DEBUG
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,11 +15,13 @@ PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__fil
 ADMINS = (
 )
 
-MANAGERS = ADMINS
+MANAGERS = settings_import.ADMINS
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = settings_import.ALLOWED_HOSTS
 
-CSRF_TRUSTED_ORIGINS = []
+SECRET_KEY = settings_import.SECRET_KEY
+
+CSRF_TRUSTED_ORIGINS = settings_import.CSRF_TRUSTED_ORIGINS
 
 DATABASES = {
     'default': {
@@ -33,6 +37,7 @@ DATABASES = {
 # PG Database
 host = None
 port = None
+sslmode = os.environ.get('DB_SSLMODE')
 
 if 'DB_USER' in os.environ:
     if 'DB_HOST' in os.environ:
@@ -56,6 +61,9 @@ if host and port:
             'PASSWORD': os.environ['DB_PASS'],
             'HOST': host,
             'PORT': port,
+            'OPTIONS': {
+                'sslmode': sslmode,
+            } if sslmode else {},
         }
     }
 
@@ -72,9 +80,7 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-TIME_ZONE = 'Europe/Copenhagen'
-
-LANGUAGE_CODE = 'en-gb'
+TIME_ZONE = settings_import.TIME_ZONE
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -122,9 +128,6 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '6%y8=x5(#ufxd*+d+-ohwy0b$5z^cla@7tvl@n55_h_cex0qat'
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -148,9 +151,9 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.template.context_processors.request',
                 'django.contrib.messages.context_processors.messages',
-                'macnamer.context_processors.display_name',
                 'macnamer.context_processors.app_version',
                 'macnamer.context_processors.django_version',
+                'macnamer.context_processors.display_name',
             ],
         },
     },
@@ -197,9 +200,6 @@ INSTALLED_APPS = (
     'namer',
     'django_bootstrap5',
     'health_check',
-    'health_check.db',
-    'health_check.storage',
-    'health_check.contrib.migrations',
 )
 
 REST_FRAMEWORK = {

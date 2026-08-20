@@ -3,6 +3,8 @@ import django.contrib.auth.views as auth_views
 
 from django.contrib import admin
 
+from health_check.views import HealthCheckView
+
 admin.autodiscover()
 
 urlpatterns = [
@@ -16,6 +18,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include(('api.v1.urls', 'api'), namespace='api')),
     # path("api/v1/", include(("api.v1.urls", "apiv1"), namespace="apiv1")),
-    path('health/', include('health_check.urls'), name='health'),
+   path(
+        "health/",
+        HealthCheckView.as_view(
+            checks=[
+                "health_check.Database",
+                "health_check.Storage",
+            ],
+        ),
+    ),
     re_path(r'^saml2/', include('djangosaml2.urls')),
 ]

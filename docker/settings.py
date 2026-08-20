@@ -37,6 +37,7 @@ DATABASES = {
 # PG Database
 host = None
 port = None
+sslmode = os.environ.get('DB_SSLMODE')
 
 if 'DB_USER' in os.environ:
     if 'DB_HOST' in os.environ:
@@ -60,6 +61,9 @@ if host and port:
             'PASSWORD': os.environ['DB_PASS'],
             'HOST': host,
             'PORT': port,
+            'OPTIONS': {
+                'sslmode': sslmode,
+            } if sslmode else {},
         }
     }
 
@@ -196,9 +200,6 @@ INSTALLED_APPS = (
     'namer',
     'django_bootstrap5',
     'health_check',
-    'health_check.db',
-    'health_check.storage',
-    'health_check.contrib.migrations',
 )
 
 REST_FRAMEWORK = {
